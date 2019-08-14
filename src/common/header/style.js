@@ -50,7 +50,7 @@ export const NavItem = styled.div`
 export const SearchWrapper = styled.div`
   position: relative;
   float: left;
-  .iconfont {
+  .zoom {
     width: 30px;
     position: absolute;
     right: 5px;
@@ -133,7 +133,7 @@ export const SearchInfoSwitch = styled.span`
 `
 
 export const SearchInfoList = styled.div`
-  overflow: hidden;
+  
 `
 
 export const SearchInfoItem = styled.a`
@@ -143,8 +143,8 @@ export const SearchInfoItem = styled.a`
   padding: 0 5px;
   margin-right: 10px;
   margin-bottom: 15px;
-  font-size; 12px;
-  border: 1px soldi #ddd;
+  font-size: 12px;
+  border: 1px solid #ddd;
   color: #787878;
   border-radius: 3px;
 `

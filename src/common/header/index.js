@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { CSSTransition } from 'react-transition-group'
+import { action } from './store'
 import {
   HeaderWrapper,
   Logo,
@@ -6,12 +9,44 @@ import {
   NavItem,
   SearchWrapper,
   NavSearch,
+  SearchInfo,
+  SearchInfoTitle,
+  SearchInfoSwitch,
+  SearchInfoList,
+  SearchInfoItem,
   Addition,
   Button
 } from './style'
 
 class Header extends Component {
+
+  getListArea = (show) => {
+    const { list } = this.props
+    if (show) {
+      return (
+        <SearchInfo>
+          <SearchInfoTitle>
+            热门搜索
+            <SearchInfoSwitch>
+              换一批
+            </SearchInfoSwitch>
+          </SearchInfoTitle>
+          <SearchInfoList>
+            {
+              list.map(item => {
+                return <SearchInfoItem key={item}>{ item }</SearchInfoItem>
+              })
+            }
+          </SearchInfoList>
+        </SearchInfo>
+      )
+    } else {
+      return null
+    }
+  }
+
   render() {
+    const { focused, handleInputFocus, handleInputBlur } = this.props
     return (
       <HeaderWrapper>
         <Logo />
@@ -23,8 +58,19 @@ class Header extends Component {
             <i className="iconfont">&#xe612;</i>
           </NavItem>
           <SearchWrapper>
-            <NavSearch />
-            <i className="iconfont ">&#xe8ac;</i>
+            <CSSTransition
+              in={focused}
+              timeout={200}
+              classNames="slide"
+            >
+              <NavSearch
+                className={ focused ? 'focused' : '' }
+                onFocus={ handleInputFocus }
+                onBlur={ handleInputBlur }
+              />
+            </CSSTransition>
+            <i className={ focused ? 'focused iconfont zoom' : 'iconfont zoom' }>&#xe8ac;</i>
+            { this.getListArea(focused) }
           </SearchWrapper>
         </Nav>
         <Addition>
@@ -39,4 +85,23 @@ class Header extends Component {
   }
 }
 
-export default Header
+const mapStateToProps = (state) => {
+  return {
+    focused: state.getIn(['header', 'focused']),
+    list: state.getIn(['header', 'list'])
+  }
+}
+
+const mapDisPatchToProps = (dispatch) => {
+  return {
+    handleInputFocus() {
+      dispatch(action.getList())
+      dispatch(action.queryFocus())
+    },
+    handleInputBlur() {
+      dispatch(action.queryBlur())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDisPatchToProps)(Header)
